@@ -24,7 +24,7 @@ namespace Users.API.Services
             return users.Select(u => _mapper.Map(u));
         }
 
-        public async Task<UserDTO> GetByIdAsync(int id)
+        public async Task<UserDTO?> GetByIdAsync(int id)
         {
             var user = await _context.Users.SingleOrDefaultAsync(u => u.Id == id);
 

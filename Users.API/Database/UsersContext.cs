@@ -7,9 +7,7 @@ namespace Users.API.Database
     {
         public virtual DbSet<User> Users { get; set; }
 
-        public UsersContext(DbContextOptions<UsersContext> options)
-            : base(options)
-        { }
+        public UsersContext(DbContextOptions<UsersContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
