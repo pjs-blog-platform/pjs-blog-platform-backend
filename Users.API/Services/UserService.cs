@@ -27,6 +27,10 @@ namespace Users.API.Services
         public async Task<UserDTO> GetByIdAsync(int id)
         {
             var user = await _context.Users.SingleOrDefaultAsync(u => u.Id == id);
+
+            if (user == null)
+                return null;
+
             return _mapper.Map(user);
         }
 
@@ -106,7 +110,7 @@ namespace Users.API.Services
             user.Bio = !String.IsNullOrEmpty(updateUser.Bio) ? updateUser.Bio : user.Bio;
             user.ProfilePictureUrl = !String.IsNullOrEmpty(updateUser.ProfilePictureUrl) ? updateUser.ProfilePictureUrl : user.ProfilePictureUrl;
 
-            _context.Users.Add(user);
+            _context.Users.Update(user);
             await _context.SaveChangesAsync();
 
             return true;

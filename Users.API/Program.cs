@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Users.API.Database;
 using Microsoft.Extensions.Configuration;
+using Users.API.Services;
 
 namespace Users.API
 {
@@ -11,8 +12,11 @@ namespace Users.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // DI
+            builder.Services.AddTransient<IUserService, UserService>();
+            builder.Services.AddSingleton<IUserMapper, UserMapper>();
 
+            // Add services to the container.
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

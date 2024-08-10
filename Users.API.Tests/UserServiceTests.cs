@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Runtime.Intrinsics.X86;
 using Microsoft.Data.SqlClient;
 using System.Net.Sockets;
+using Microsoft.Extensions.Options;
 
 namespace Users.API.Tests
 {
@@ -26,7 +27,7 @@ namespace Users.API.Tests
 
         public UserServiceTests()
         {
-            _mockContext = new Mock<UsersContext>();
+            _mockContext = new Mock<UsersContext>(new DbContextOptions<UsersContext> { });
             _mockMapper = new Mock<IUserMapper>();
             _userService = new UserService(_mockContext.Object, _mockMapper.Object);
         }
