@@ -16,6 +16,9 @@ jobs:
       SONAR_PROJECT_KEY: pjs-blog-platform_pjs-blog-platform-backend  # Define the SonarCloud project key here
 
     steps:
+      - name: Print environment variables
+        run: echo "SONAR_TOKEN=${{ secrets.SONAR_TOKEN }}"
+    
       - name: Checkout code
         uses: actions/checkout@v3
 
