@@ -14,6 +14,7 @@ jobs:
 
     env:
       SONAR_PROJECT_KEY: pjs-blog-platform_pjs-blog-platform-backend
+      SONAR_HOST_URL: https://sonarcloud.io/
       SONAR_ORGANIZATION_KEY: pjs-blog-platform
 
     steps:
@@ -28,20 +29,17 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Install SonarCloud Scanner
-        run: dotnet tool install --global dotnet-sonarscanner
-
       - name: Run SonarCloud Analysis Begin
-        run: dotnet sonarscanner begin /k:"${{ env.SONAR_PROJECT_KEY }}" /o:"${{ env.SONAR_ORGANIZATION_KEY }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.cs.vscoveragexml.reportsPaths="**/*.coveragexml"
+        uses: SonarSource/sonarqube-scan-action@v2.3.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ env.SONAR_HOST_URL }}
 
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
       - name: Test and Collect Code Coverage
         run: dotnet test --configuration Release --collect:"Code Coverage"
-
-      - name: Run SonarCloud Analysis End
-        run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
       - name: Publish SonarCloud Report to GitHub
         uses: sonarsource/sonarcloud-github-action@v2
