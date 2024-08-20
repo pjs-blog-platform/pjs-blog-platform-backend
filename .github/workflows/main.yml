@@ -32,7 +32,7 @@ jobs:
         run: dotnet tool install --global dotnet-sonarscanner
 
       - name: Run SonarCloud Analysis Begin
-        run: dotnet sonarscanner begin /k:"${{ env.SONAR_PROJECT_KEY }}" /o:"${{ env.SONAR_ORGANIZATION_KEY }}" /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+        run: dotnet sonarscanner begin /k:"${{ env.SONAR_PROJECT_KEY }}" /o:"${{ env.SONAR_ORGANIZATION_KEY }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.cs.vscoveragexml.reportsPaths="**/*.coveragexml"
 
       - name: Build
         run: dotnet build --configuration Release --no-restore
@@ -41,7 +41,7 @@ jobs:
         run: dotnet test --configuration Release --collect:"Code Coverage"
 
       - name: Run SonarCloud Analysis End
-        run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+        run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
       - name: Publish SonarCloud Report to GitHub
         uses: sonarsource/sonarcloud-github-action@v2
