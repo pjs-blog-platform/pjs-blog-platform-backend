@@ -45,12 +45,3 @@ jobs:
 
       - name: Run SonarCloud Analysis End
         run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-
-      - name: Publish SonarCloud Report to GitHub
-        uses: sonarsource/sonarcloud-github-action@v2
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.organization=${{ env.SONAR_ORGANIZATION_KEY }}
-            -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
