@@ -38,7 +38,7 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Test and Collect Code Coverage
-        run: dotnet test --configuration Release --collect:"XPlat Code Coverage"
+        run: dotnet test --configuration Release --collect:"Code Coverage"
 
       - name: Run SonarCloud Analysis End
         run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
