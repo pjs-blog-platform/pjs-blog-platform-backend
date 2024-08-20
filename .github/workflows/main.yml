@@ -13,7 +13,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      SONAR_PROJECT_KEY: pjs-blog-platform_pjs-blog-platform-backend  # Define the SonarCloud project key here
+      SONAR_PROJECT_KEY: pjs-blog-platform_pjs-blog-platform-backend
+      SONAR_ORGANIZATION_KEY: pjs-blog-platform
 
     steps:
       - name: Checkout code
@@ -27,26 +28,26 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build
-        run: dotnet build --configuration Release --no-restore
-
       - name: Install SonarCloud Scanner
         run: dotnet tool install --global dotnet-sonarscanner
 
       - name: Run SonarCloud Analysis Begin
-        run: dotnet sonarscanner begin /k:"pjs-blog-platform_pjs-blog-platform-backend" /o:"pjs-blog-platform" /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+        run: dotnet sonarscanner begin /k:"${{ env.SONAR_PROJECT_KEY }}" /o:"${{ env.SONAR_ORGANIZATION_KEY }}" /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
-      - name: Build (for SonarCloud)
-        run: dotnet build --configuration Release
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test and Collect Code Coverage
+        run: dotnet test --configuration Release --collect:"XPlat Code Coverage"
 
       - name: Run SonarCloud Analysis End
         run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
-      - name: Upload Code Coverage to SonarCloud
-        run: dotnet test --collect:"XPlat Code Coverage"
-
       - name: Publish SonarCloud Report to GitHub
         uses: sonarsource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          sonarcloud-token: ${{ secrets.SONAR_TOKEN }}
-          project-key: ${{ env.SONAR_PROJECT_KEY }}
+          args: >
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION_KEY }}
+            -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
