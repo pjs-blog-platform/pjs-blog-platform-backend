@@ -40,10 +40,10 @@ jobs:
         with:
           args: >
             -Dsonar.organization=pjs-blog-platform
-            -Dsonar.projectKey="$SONAR_PROJECT_KEY"
+            -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
 
       - name: Run SonarCloud Analysis
-        run: dotnet sonarscanner begin /k:"$SONAR_PROJECT_KEY" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+        run: dotnet sonarscanner begin /k:"${{ env.SONAR_PROJECT_KEY }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
       - name: Build (for SonarCloud)
         run: dotnet build --configuration Release
