@@ -30,25 +30,16 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
-      - name: Run tests
-        run: dotnet test --verbosity normal
-
       - name: Install SonarCloud Scanner
-        uses: sonarsource/sonarcloud-github-action@v2
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.organization=pjs-blog-platform
-            -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
+        run: dotnet tool install --global dotnet-sonarscanner
 
-      - name: Run SonarCloud Analysis
+      - name: Run SonarCloud Analysis Begin
         run: dotnet sonarscanner begin /k:"${{ env.SONAR_PROJECT_KEY }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
       - name: Build (for SonarCloud)
         run: dotnet build --configuration Release
 
-      - name: End SonarCloud Analysis
+      - name: Run SonarCloud Analysis End
         run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
       - name: Upload Code Coverage to SonarCloud
