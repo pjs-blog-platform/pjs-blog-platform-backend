@@ -1,0 +1,57 @@
+name: .NET Core CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      SONAR_PROJECT_KEY: pjs-blog-platform_pjs-blog-platform-backend  # Define the SonarCloud project key here
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test --no-build --verbosity normal
+
+      - name: Install SonarCloud Scanner
+        uses: sonarsource/sonarcloud-github-action@v2
+        with:
+          sonarcloud-token: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Run SonarCloud Analysis
+        run: dotnet sonarscanner begin /k:"$SONAR_PROJECT_KEY" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+
+      - name: Build (for SonarCloud)
+        run: dotnet build --configuration Release
+
+      - name: End SonarCloud Analysis
+        run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+
+      - name: Upload Code Coverage to SonarCloud
+        run: dotnet test --collect:"XPlat Code Coverage"
+
+      - name: Publish SonarCloud Report to GitHub
+        uses: sonarsource/sonarcloud-github-action@v2
+        with:
+          sonarcloud-token: ${{ secrets.SONAR_TOKEN }}
+          project-key: ${{ env.SONAR_PROJECT_KEY }}
