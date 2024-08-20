@@ -34,7 +34,7 @@ jobs:
         run: dotnet tool install --global dotnet-sonarscanner
 
       - name: Run SonarCloud Analysis Begin
-        run: dotnet sonarscanner begin /k:"${{ env.SONAR_PROJECT_KEY }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+        run: dotnet sonarscanner begin /k:"pjs-blog-platform_pjs-blog-platform-backend" /o:"pjs-blog-platform" /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
       - name: Build (for SonarCloud)
         run: dotnet build --configuration Release
